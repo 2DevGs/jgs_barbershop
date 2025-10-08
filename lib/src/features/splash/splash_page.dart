@@ -7,11 +7,11 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Splash')),
-      body: Container(
-        child: ElevatedButton(onPressed: () async {
+      body: ElevatedButton(
+        onPressed: () async {
           await Future.delayed(const Duration(seconds: 2)).asyncLoader();
-        }, child: const Text('Teste Loader'),),
+        },
+        child: const Text('Teste Loader'),
       ),
     );
   }
