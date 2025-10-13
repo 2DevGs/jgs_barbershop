@@ -1,6 +1,8 @@
 import 'package:asyncstate/asyncstate.dart';
 import 'package:flutter/material.dart';
+import 'package:jgs_barbershop/src/core/ui/barbershop_theme.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/barbershop_loader.dart';
+import 'package:jgs_barbershop/src/features/auth/login/login_page.dart';
 import 'package:jgs_barbershop/src/features/splash/splash_page.dart';
 
 class BarbershopApp extends StatelessWidget {
@@ -13,8 +15,12 @@ class BarbershopApp extends StatelessWidget {
       builder: (asyncNavigatorObserver) {
         return MaterialApp(
           title: 'BarberShop',
+          theme: BarbershopTheme.themeData,
           navigatorObservers: [asyncNavigatorObserver],
-          routes: {'/': (_) => const SplashPage()},
+          routes: {
+            '/': (_) => const SplashPage(),
+            '/auth/login': (_) => const LoginPage(),
+          },
         );
       },
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jgs_barbershop/src/features/auth/login/login_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -8,7 +9,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  var _scale = 5.0;
+  var _scale = 10.0;
   var _animationOpacityLogo = 0.0;
 
   double get _logoAnimationWidth => 100 * _scale;
@@ -34,7 +35,7 @@ class _SplashPageState extends State<SplashPage> {
           image: DecorationImage(
             image: AssetImage('assets/images/background_image_chair.jpg'),
             fit: BoxFit.cover,
-            opacity: 0.5,
+            opacity: 0.2,
           ),
         ),
         child: Center(
@@ -42,6 +43,20 @@ class _SplashPageState extends State<SplashPage> {
             duration: const Duration(seconds: 3),
             curve: Curves.easeIn,
             opacity: _animationOpacityLogo,
+            onEnd: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                PageRouteBuilder(
+                  settings: const RouteSettings(name: '/auth/login'),
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return const LoginPage();
+                  },
+                  transitionsBuilder: (_, animation, __, child) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+                ),
+                (route) => false,
+              );
+            },
             child: AnimatedContainer(
               duration: const Duration(seconds: 3),
               width: _logoAnimationWidth,
