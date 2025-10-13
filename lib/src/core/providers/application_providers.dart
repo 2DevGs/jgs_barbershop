@@ -8,5 +8,6 @@ part 'application_providers.g.dart';
 @Riverpod(keepAlive: true)
 RestClient restClient(Ref ref) => RestClient();
 
+@Riverpod(keepAlive: true)
 UserRepository userRepository(Ref ref) =>
     UserRepositoryImpl(restClient: ref.read(restClientProvider));

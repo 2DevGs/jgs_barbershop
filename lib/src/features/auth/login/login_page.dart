@@ -11,7 +11,7 @@ class LoginPage extends StatelessWidget {
       body: DecoratedBox(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/background_image_chair.jpg'),
+            image: AssetImage(ImagesConstants.backgroundChair),
             fit: BoxFit.cover,
             opacity: 0.2,
           ),
@@ -28,7 +28,7 @@ class LoginPage extends StatelessWidget {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset('assets/images/imgLogo.png'),
+                        Image.asset(ImagesConstants.imageLogo),
                         const SizedBox(height: 20),
                         TextFormField(
                           decoration: InputDecoration(
