@@ -29,7 +29,7 @@ class LoginPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset('assets/images/imgLogo.png'),
-                        const SizedBox(height: 48),
+                        const SizedBox(height: 20),
                         TextFormField(
                           decoration: InputDecoration(
                             label: Text('E-mail'),
@@ -39,7 +39,7 @@ class LoginPage extends StatelessWidget {
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
-                        const SizedBox(height: 48),
+                        const SizedBox(height: 20),
                         TextFormField(
                           decoration: InputDecoration(
                             label: Text('Senha'),
