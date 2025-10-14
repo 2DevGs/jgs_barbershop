@@ -1,6 +1,9 @@
 import 'package:jgs_barbershop/src/core/fp/either.dart';
 import 'package:jgs_barbershop/src/core/restClient/rest_client.dart';
+import 'package:jgs_barbershop/src/model/barbershop_model.dart';
 import 'package:jgs_barbershop/src/model/user_model.dart';
+import 'package:jgs_barbershop/src/repositories/barbershop/barbershop_repository.dart';
+import 'package:jgs_barbershop/src/repositories/barbershop/barbershop_repository_impl.dart';
 import 'package:jgs_barbershop/src/repositories/user/user_repository.dart';
 import 'package:jgs_barbershop/src/repositories/user/user_repository_impl.dart';
 import 'package:jgs_barbershop/src/services/users_login/user_login_service.dart';
@@ -25,6 +28,23 @@ Future<UserModel> getMe(Ref ref) async {
   final result = await ref.watch(userRepositoryProvider).me();
   return switch (result) {
     Success(value: final userModel) => userModel,
+    Failure(:final exception) => throw exception,
+  };
+}
+
+@Riverpod(keepAlive: true)
+BarbershopRepository barbershopRepository(Ref ref) =>
+    BarbershopRepositoryImpl(restClient: ref.watch(restClientProvider));
+
+@Riverpod(keepAlive: true)
+Future<BarbershopModel> getMyBarbershop(Ref ref) async {
+  final userModel = await ref.watch(getMeProvider.future);
+
+  final barbershopRepository = ref.watch(barbershopRepositoryProvider);
+  final result = await barbershopRepository.getMyBarbershop(userModel);
+
+  return switch(result) {
+    Success(value: final barbershop) => barbershop,
     Failure(:final exception) => throw exception,
   };
 }
