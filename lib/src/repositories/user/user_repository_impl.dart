@@ -6,6 +6,7 @@ import 'package:jgs_barbershop/src/core/exceptions/auth_exception.dart';
 import 'package:jgs_barbershop/src/core/exceptions/repository_exception.dart';
 
 import 'package:jgs_barbershop/src/core/fp/either.dart';
+import 'package:jgs_barbershop/src/core/fp/nil.dart';
 import 'package:jgs_barbershop/src/core/restClient/rest_client.dart';
 import 'package:jgs_barbershop/src/model/user_model.dart';
 
@@ -47,10 +48,35 @@ class UserRepositoryImpl implements UserRepository {
       return Success(UserModel.fromMap(data));
     } on DioException catch (e, s) {
       log('Erro ao buscar usuário logado!', error: e, stackTrace: s);
-      return Failure(RepositoryException(message: 'Eror ao buscar usuário logado!'));
-    }on ArgumentError catch (e, s) {
+      return Failure(
+        RepositoryException(message: 'Eror ao buscar usuário logado!'),
+      );
+    } on ArgumentError catch (e, s) {
       log('Invalid Json', error: e, stackTrace: s);
       return Failure(RepositoryException(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, Nil>> registerAdmin(
+    ({String email, String name, String password}) userData,
+  ) async {
+    try {
+      await restClient.unAuth.post(
+        '/users',
+        data: {
+          'name': userData.name,
+          'email': userData.email,
+          'password': userData.password,
+          'profile': 'ADM',
+        },
+      );
+      return Success(Nil());
+    } on DioException catch (e, s) {
+      log('Erro ao registrar o usuário', error: e, stackTrace: s);
+      return Failure(
+        RepositoryException(message: 'Erro ao registrar o usuário'),
+      );
     }
   }
 }
