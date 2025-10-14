@@ -21,6 +21,10 @@ class LoginVm extends _$LoginVm {
 
     switch (result) {
       case Success():
+        // Invalidating caches to avoid logging in with the wrong user
+        ref.invalidate(getMeProvider);
+        ref.invalidate(getMyBarbershopProvider);
+        
         final userModel = await ref.read(getMeProvider.future);
         switch(userModel){
           case UserModelADM():
