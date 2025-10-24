@@ -39,7 +39,7 @@ class BarbershopRepositoryImpl implements BarbershopRepository {
 
   @override
   Future<Either<RepositoryException, Nil>> save(
-    ({String email, String name, List<int> openHours, List<String> openingDays})
+    ({String email, String name, List<int> openingHours, List<String> openingDays})
     data,
   ) async {
     try {
@@ -50,7 +50,7 @@ class BarbershopRepositoryImpl implements BarbershopRepository {
           'name': data.name,
           'email': data.email,
           'opening_days': data.openingDays,
-          'opening_hours': data.openHours,
+          'opening_hours': data.openingHours,
         },
       );
       return Success(Nil());
