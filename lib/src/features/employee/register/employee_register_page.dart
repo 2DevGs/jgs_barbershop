@@ -12,14 +12,15 @@ class EmployeeRegisterPage extends StatefulWidget {
 }
 
 class _EmployeeRegisterPageState extends State<EmployeeRegisterPage> {
-
   var registerADM = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Cadastrar colaborador')
-      , scrolledUnderElevation: 0,),
+      appBar: AppBar(
+        title: const Text('Cadastrar colaborador'),
+        scrolledUnderElevation: 0,
+      ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
@@ -31,11 +32,15 @@ class _EmployeeRegisterPageState extends State<EmployeeRegisterPage> {
                 const SizedBox(height: 32),
                 Row(
                   children: [
-                    Checkbox.adaptive(value: registerADM, onChanged: (value) {
-                      setState(() {
-                        registerADM = !registerADM;
-                      });
-                    },activeColor: ColorsConstants.brow,),
+                    Checkbox.adaptive(
+                      value: registerADM,
+                      onChanged: (value) {
+                        setState(() {
+                          registerADM = !registerADM;
+                        });
+                      },
+                      activeColor: ColorsConstants.brow,
+                    ),
                     const Expanded(
                       child: Text(
                         'Sou administrador e quero me cadastrar como colaborador.',
@@ -64,7 +69,7 @@ class _EmployeeRegisterPageState extends State<EmployeeRegisterPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                WeekdaysPanel(onDayPressed: (String day) {}),
+                WeekdaysPanel(enabledDays: const ['Seg', 'Qua', 'Sab'], onDayPressed: (String day) {}),
                 const SizedBox(height: 24),
                 HoursPanel(
                   startTime: 6,
