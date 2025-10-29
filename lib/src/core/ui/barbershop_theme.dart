@@ -9,6 +9,8 @@ sealed class BarbershopTheme {
 
   static ThemeData themeData = ThemeData(
     appBarTheme: const AppBarTheme(
+      scrolledUnderElevation: 0,
+      elevation: 0,
       centerTitle: true,
       iconTheme: IconThemeData(color: ColorsConstants.brow),
       backgroundColor: Colors.white,
