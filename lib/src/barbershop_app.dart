@@ -6,6 +6,7 @@ import 'package:jgs_barbershop/src/core/ui/widgets/barbershop_loader.dart';
 import 'package:jgs_barbershop/src/features/auth/login/login_page.dart';
 import 'package:jgs_barbershop/src/features/auth/register/barbershop/barbershop_register_page.dart';
 import 'package:jgs_barbershop/src/features/auth/register/user/user_register_page.dart';
+import 'package:jgs_barbershop/src/features/employee/register/employee_register_page.dart';
 import 'package:jgs_barbershop/src/features/home/adm/home_adm_page.dart';
 import 'package:jgs_barbershop/src/features/splash/splash_page.dart';
 
@@ -30,6 +31,7 @@ class BarbershopApp extends StatelessWidget {
                 const BarbershopRegisterPage(),
             '/home/adm': (_) => const HomeAdmPage(),
             '/home/employee': (_) => const Text('EMPLOYEE'),
+            '/employee/register': (_) => const EmployeeRegisterPage(),
           },
         );
       },

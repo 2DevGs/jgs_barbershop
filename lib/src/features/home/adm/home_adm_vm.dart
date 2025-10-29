@@ -22,11 +22,13 @@ class HomeAdmVm extends _$HomeAdmVm {
 
     switch (employeesResult) {
       case Success(value: var employeesData):
-        var employees = <UserModel>[];
-        employees.addAll(employeesData);
+        final employees = <UserModel>[];
+
         if (me case UserModelADM(workDays: _?, workhours: _?)) {
           employees.add(me);
         }
+        employees.addAll(employeesData);
+
         return HomeAdmState(
           status: HomeAdmStateStatus.loaded,
           employees: employees,
