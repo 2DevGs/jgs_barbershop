@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jgs_barbershop/src/core/providers/application_providers.dart';
 import 'package:jgs_barbershop/src/core/ui/constants.dart';
+import 'package:jgs_barbershop/src/core/ui/helpers/messages.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/avatar_widget.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/barbershop_loader.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/hours_panel.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/weekdays_panel.dart';
+import 'package:jgs_barbershop/src/features/employee/register/employee_register_state.dart';
 import 'package:jgs_barbershop/src/features/employee/register/employee_register_vm.dart';
 import 'package:jgs_barbershop/src/model/barbershop_model.dart';
 import 'package:validatorless/validatorless.dart';
@@ -39,6 +41,19 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
   Widget build(BuildContext context) {
     final employeeRegisterVM = ref.watch(employeeRegisterVmProvider.notifier);
     final barbershopAsyncValue = ref.watch(getMyBarbershopProvider);
+
+    ref.listen(employeeRegisterVmProvider.select((state) => state.status), (_, status) {
+      switch(status){
+        case EmployeeRegisterStateStatus.initial:
+          break;
+        case EmployeeRegisterStateStatus.success:
+          Messages.showSuccess('Colaborador cadastrado com sucesso!', context);
+          Navigator.of(context).pop();
+        case EmployeeRegisterStateStatus.error:
+          Messages.showError('Erro ao registrar colaborador!', context);
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cadastrar colaborador'),
@@ -98,7 +113,8 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
                             const SizedBox(height: 24),
                             TextFormField(
                               controller: _nameEC,
-                              validator: Validatorless.required(
+                              validator: registerADM ? null : 
+                              Validatorless.required(
                                 'Nome Obrigatório',
                               ),
                               decoration: InputDecoration(label: Text('Nome')),
@@ -106,7 +122,8 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
                             const SizedBox(height: 24),
                             TextFormField(
                               controller: _emailEC,
-                              validator: Validatorless.multiple([
+                              validator: registerADM ? null : 
+                              Validatorless.multiple([
                                 Validatorless.required('E-mail Obrigatório'),
                                 Validatorless.email('E-mail inválido'),
                               ]),
@@ -118,7 +135,8 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
                             TextFormField(
                               obscureText: true,
                               controller: _passwordEC,
-                              validator: Validatorless.multiple([
+                              validator: registerADM ? null : 
+                              Validatorless.multiple([
                                 Validatorless.required('Senha Obrigatória'),
                                 Validatorless.min(
                                   6,
@@ -144,7 +162,37 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
                       ),
                       const SizedBox(height: 24),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          switch (_formKey.currentState?.validate()) {
+                            case false || null:
+                              Messages.showError(
+                                'Existem campos inválidos',
+                                context,
+                              );
+                            case true:
+                              final EmployeeRegisterState(
+                                workDays: List(isNotEmpty: hasWorkDays),
+                                workHours: List(isNotEmpty: hasWorkHours),
+                              ) = ref.watch(
+                                employeeRegisterVmProvider,
+                              );
+                              if (!hasWorkDays || !hasWorkHours) {
+                                Messages.showError(
+                                  'Por favor selecione os dias da semana e horário de atendimento',
+                                  context,
+                                );
+                                return;
+                              }
+                              final name = _nameEC.text;
+                              final email = _emailEC.text;
+                              final password = _passwordEC.text;
+                              employeeRegisterVM.register(
+                                name: name,
+                                email: email,
+                                password: password,
+                              );
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(56),
                         ),
