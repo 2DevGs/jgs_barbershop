@@ -108,4 +108,42 @@ class UserRepositoryImpl implements UserRepository {
       );
     }
   }
+
+  @override
+  Future<Either<RepositoryException, Nil>> registerAdmAsEmployee(
+    ({List<String> workDays, List<int> workHours}) userModel,
+  ) async {
+    try {
+      final userModelResult = await me();
+
+      final int userId;
+
+      switch (userModelResult) {
+        case Success(value: UserModel(:var id)):
+          userId = id;
+        case Failure(:var exception):
+          return Failure(exception);
+      }
+
+      await restClient.auth.put(
+        '/users/$userId',
+        data: {
+          'work_days': userModel.workDays,
+          'work_hours': userModel.workHours,
+        },
+      );
+      return Success(Nil());
+    } on DioException catch (e, s) {
+      log(
+        'Erro ao inserir administrador como colaborador',
+        error: e,
+        stackTrace: s,
+      );
+      return Failure(
+        RepositoryException(
+          message: 'Erro ao inserir administrador como colaborador',
+        ),
+      );
+    }
+  }
 }
