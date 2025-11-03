@@ -8,6 +8,7 @@ sealed class BarbershopTheme {
   );
 
   static ThemeData themeData = ThemeData(
+    scaffoldBackgroundColor: Colors.white,
     appBarTheme: const AppBarTheme(
       scrolledUnderElevation: 0,
       elevation: 0,

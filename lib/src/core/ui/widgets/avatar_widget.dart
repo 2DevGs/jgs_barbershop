@@ -3,7 +3,8 @@ import 'package:jgs_barbershop/src/core/ui/barbershop_icons.dart';
 import 'package:jgs_barbershop/src/core/ui/constants.dart';
 
 class AvatarWidget extends StatelessWidget {
-  const AvatarWidget({super.key});
+  final bool hideUploadButton;
+  const AvatarWidget({super.key, this.hideUploadButton = false});
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +23,19 @@ class AvatarWidget extends StatelessWidget {
           Positioned(
             bottom: 2,
             right: 2,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: ColorsConstants.brow, width: 4),
-                shape: BoxShape.circle
-              ),
-              child: const Icon(
-                BarbershopIcons.addEmployee,
-                size: 20,
-                color: ColorsConstants.brow,
+            child: Offstage(
+              offstage: hideUploadButton,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: ColorsConstants.brow, width: 4),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  BarbershopIcons.addEmployee,
+                  size: 20,
+                  color: ColorsConstants.brow,
+                ),
               ),
             ),
           ),
