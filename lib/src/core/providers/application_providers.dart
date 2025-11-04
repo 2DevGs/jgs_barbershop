@@ -6,6 +6,8 @@ import 'package:jgs_barbershop/src/model/barbershop_model.dart';
 import 'package:jgs_barbershop/src/model/user_model.dart';
 import 'package:jgs_barbershop/src/repositories/barbershop/barbershop_repository.dart';
 import 'package:jgs_barbershop/src/repositories/barbershop/barbershop_repository_impl.dart';
+import 'package:jgs_barbershop/src/repositories/schedule/schedule_repository.dart';
+import 'package:jgs_barbershop/src/repositories/schedule/schedule_repository_impl.dart';
 import 'package:jgs_barbershop/src/repositories/user/user_repository.dart';
 import 'package:jgs_barbershop/src/repositories/user/user_repository_impl.dart';
 import 'package:jgs_barbershop/src/services/users_login/user_login_service.dart';
@@ -63,3 +65,7 @@ Future<void> logout(Ref ref) async {
     BarbershopNavGlobalKey.instance.navKey.currentContext!,
   ).pushNamedAndRemoveUntil('/auth/login', (route) => false);
 }
+
+@riverpod
+ScheduleRepository scheduleRepository(Ref ref) =>
+    ScheduleRepositoryImpl(restClient: ref.read(restClientProvider));
