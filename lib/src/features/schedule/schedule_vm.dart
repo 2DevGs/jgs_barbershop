@@ -1,4 +1,8 @@
+import 'package:asyncstate/asyncstate.dart';
+import 'package:jgs_barbershop/src/core/fp/either.dart';
+import 'package:jgs_barbershop/src/core/providers/application_providers.dart';
 import 'package:jgs_barbershop/src/features/schedule/schedule_state.dart';
+import 'package:jgs_barbershop/src/model/barbershop_model.dart';
 import 'package:jgs_barbershop/src/model/user_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,11 +21,37 @@ class ScheduleVm extends _$ScheduleVm {
     }
   }
 
-  void dateSelect(DateTime date){
+  void dateSelect(DateTime date) {
     state = state.copyWith(scheduleDate: () => date);
   }
 
-  Future<void> register({required UserModel userModel, required String clientName}) async {
-    
+  Future<void> register({
+    required UserModel userModel,
+    required String clientName,
+  }) async {
+    final asyncLoaderHandler = AsyncLoaderHandler()..start();
+
+    final ScheduleState(:scheduleDate, :scheduleHour) = state;
+    final scheduleRepository = ref.read(scheduleRepositoryProvider);
+    final BarbershopModel(id: barbershopId) = await ref.watch(
+      getMyBarbershopProvider.future,
+    );
+    final dto = (
+      barbershopId: barbershopId,
+      userId: userModel.id,
+      clientName: clientName,
+      date: scheduleDate!,
+      time: scheduleHour!,
+    );
+    final scheduleresult = await scheduleRepository.scheduleClient(dto);
+
+    switch(scheduleresult){
+      case Success():
+        state = state.copyWith(status: ScheduleStateStatus.success);
+      case Failure():
+        state = state.copyWith(status: ScheduleStateStatus.error);
+    }
+
+    asyncLoaderHandler.close();
   }
 }

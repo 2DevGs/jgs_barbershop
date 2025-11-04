@@ -4,7 +4,7 @@ import 'package:jgs_barbershop/src/core/fp/nil.dart';
 
 abstract interface class ScheduleRepository {
   Future<Either<RepositoryException, Nil>> scheduleClient(
-    ({int babershopId, int userId, String clientName, DateTime date, int time})
+    ({int barbershopId, int userId, String clientName, DateTime date, int time})
     scheduleData,
   );
 }

@@ -15,14 +15,14 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<Either<RepositoryException, Nil>> scheduleClient(
-    ({int babershopId, String clientName, DateTime date, int time, int userId})
+    ({int barbershopId, String clientName, DateTime date, int time, int userId})
     scheduleData,
   ) async {
     try {
       await restClient.auth.post(
         '/schedules',
         data: {
-          'barbershop_id': scheduleData.babershopId,
+          'barbershop_id': scheduleData.barbershopId,
           'user_id': scheduleData.userId,
           'client_name': scheduleData.clientName,
           'date': scheduleData.date.toIso8601String(),
