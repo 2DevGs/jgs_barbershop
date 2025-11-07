@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:jgs_barbershop/src/core/ui/barbershop_icons.dart';
 import 'package:jgs_barbershop/src/core/ui/constants.dart';
@@ -6,17 +7,18 @@ import 'package:jgs_barbershop/src/core/ui/helpers/form_helper.dart';
 import 'package:jgs_barbershop/src/core/ui/helpers/messages.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/avatar_widget.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/hours_panel.dart';
+import 'package:jgs_barbershop/src/features/schedule/schedule_vm.dart';
 import 'package:jgs_barbershop/src/features/schedule/widgets/schedule_calendar.dart';
 import 'package:validatorless/validatorless.dart';
 
-class SchedulePage extends StatefulWidget {
+class SchedulePage extends ConsumerStatefulWidget {
   const SchedulePage({super.key});
 
   @override
-  State<SchedulePage> createState() => _SchedulePageState();
+  ConsumerState<SchedulePage> createState() => _SchedulePageState();
 }
 
-class _SchedulePageState extends State<SchedulePage> {
+class _SchedulePageState extends ConsumerState<SchedulePage> {
   var dateFormat = DateFormat('dd/MM/yyyy');
   var showCalendar = false;
   final _formKey = GlobalKey<FormState>();
@@ -32,6 +34,7 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
+    final scheduleVM = ref.watch(scheduleVmProvider.notifier);
     return Scaffold(
       appBar: AppBar(title: const Text('Agendar cliente')),
       body: SingleChildScrollView(
@@ -51,14 +54,18 @@ class _SchedulePageState extends State<SchedulePage> {
                   const SizedBox(height: 37),
                   TextFormField(
                     controller: _clientEC,
-                    validator: Validatorless.required('Nome do cliente obrigatório'),
+                    validator: Validatorless.required(
+                      'Nome do cliente obrigatório',
+                    ),
                     onTapOutside: (_) => context.unFocus(),
                     decoration: const InputDecoration(label: Text('Cliente')),
                   ),
                   const SizedBox(height: 32),
                   TextFormField(
                     controller: _dateEC,
-                    validator: Validatorless.required('Selecione a data do agendamento'),
+                    validator: Validatorless.required(
+                      'Selecione a data do agendamento',
+                    ),
                     onTapOutside: (_) => context.unFocus(),
                     onTap: () {
                       setState(() {
@@ -92,6 +99,7 @@ class _SchedulePageState extends State<SchedulePage> {
                           okPressed: (value) {
                             setState(() {
                               _dateEC.text = dateFormat.format(value);
+                              scheduleVM.dateSelect(value);
                               showCalendar = false;
                             });
                           },
@@ -103,8 +111,8 @@ class _SchedulePageState extends State<SchedulePage> {
                   HoursPanel.singleSelection(
                     startTime: 6,
                     endTime: 23,
-                    onHourPressed: (hour) {},
-                    enabledTimes: [6, 7, 8],
+                    onHourPressed: scheduleVM.hourSelect,
+                    enabledTimes: const [6, 7, 8],
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
@@ -112,11 +120,23 @@ class _SchedulePageState extends State<SchedulePage> {
                       minimumSize: const Size.fromHeight(56),
                     ),
                     onPressed: () {
-                      switch(_formKey.currentState?.validate()){
+                      switch (_formKey.currentState?.validate()) {
                         case null || false:
                           Messages.showError('Dados incompletos!', context);
-                          case true: 
-                            // Call Vm
+                        case true:
+                          final hourSelected = ref.watch(
+                            scheduleVmProvider.select(
+                              (state) => state.scheduleHour != null,
+                            ),
+                          );
+                          if (hourSelected) {
+                            // register
+                          } else {
+                            Messages.showError(
+                              'Por favor, selecione um horário de atendimento!',
+                              context,
+                            );
+                          }
                       }
                     },
                     child: const Text('AGENDAR'),
