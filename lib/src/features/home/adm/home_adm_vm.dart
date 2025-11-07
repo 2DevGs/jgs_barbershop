@@ -24,7 +24,7 @@ class HomeAdmVm extends _$HomeAdmVm {
       case Success(value: var employeesData):
         final employees = <UserModel>[];
 
-        if (me case UserModelADM(workDays: _?, workhours: _?)) {
+        if (me case UserModelADM(workDays: _?, workHours: _?)) {
           employees.add(me);
         }
         employees.addAll(employeesData);

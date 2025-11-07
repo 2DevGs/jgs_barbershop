@@ -7,8 +7,10 @@ import 'package:jgs_barbershop/src/core/ui/helpers/form_helper.dart';
 import 'package:jgs_barbershop/src/core/ui/helpers/messages.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/avatar_widget.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/hours_panel.dart';
+import 'package:jgs_barbershop/src/features/schedule/schedule_state.dart';
 import 'package:jgs_barbershop/src/features/schedule/schedule_vm.dart';
 import 'package:jgs_barbershop/src/features/schedule/widgets/schedule_calendar.dart';
+import 'package:jgs_barbershop/src/model/user_model.dart';
 import 'package:validatorless/validatorless.dart';
 
 class SchedulePage extends ConsumerStatefulWidget {
@@ -34,7 +36,33 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
+    final userModel = ModalRoute.of(context)!.settings.arguments as UserModel;
+
     final scheduleVM = ref.watch(scheduleVmProvider.notifier);
+
+    final employeeData = switch(userModel){
+      UserModelADM(: final workDays, : final workHours) => (
+        workDays: workDays!,
+        workHours: workHours!
+      ),
+      UserModelEmployee(: final workDays, : final workHours) => (
+        workDays: workDays,
+        workHours: workHours
+      )
+    };
+
+    ref.listen(scheduleVmProvider.select((state) => state.status), (_, status) {
+      switch(status) {
+        case ScheduleStateStatus.initial:
+          break;
+        case ScheduleStateStatus.success:
+          Messages.showSuccess('Cliente agendado com sucesso', context);
+          Navigator.of(context).pop();
+        case ScheduleStateStatus.error:
+          Messages.showError('Eror ao registrar agendamento', context);
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(title: const Text('Agendar cliente')),
       body: SingleChildScrollView(
@@ -47,9 +75,12 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
                 children: [
                   AvatarWidget(hideUploadButton: true),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Nome e sobrenome',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                  Text(
+                    userModel.name,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   const SizedBox(height: 37),
                   TextFormField(
@@ -103,6 +134,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
                               showCalendar = false;
                             });
                           },
+                          workDays: employeeData.workDays,
                         ),
                       ],
                     ),
@@ -112,7 +144,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
                     startTime: 6,
                     endTime: 23,
                     onHourPressed: scheduleVM.hourSelect,
-                    enabledTimes: const [6, 7, 8],
+                    enabledTimes: employeeData.workHours,
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
@@ -130,7 +162,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
                             ),
                           );
                           if (hourSelected) {
-                            // register
+                            scheduleVM.register(userModel: userModel, clientName: _clientEC.text);
                           } else {
                             Messages.showError(
                               'Por favor, selecione um horário de atendimento!',

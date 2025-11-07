@@ -23,7 +23,7 @@ sealed class UserModel {
 
 class UserModelADM extends UserModel {
   final List<String>? workDays;
-  final List<int>? workhours;
+  final List<int>? workHours;
 
   UserModelADM({
     required super.id,
@@ -31,7 +31,7 @@ class UserModelADM extends UserModel {
     required super.email,
     super.avatar,
     this.workDays,
-    this.workhours,
+    this.workHours,
   });
 
   factory UserModelADM.fromMap(Map<String, dynamic> json) {
@@ -43,7 +43,7 @@ class UserModelADM extends UserModel {
           email: email,
           avatar: json['avatar'],
           workDays: json['work_days']?.cast<String>(),
-          workhours: json['work_hours']?.cast<int>(),
+          workHours: json['work_hours']?.cast<int>(),
         ),
       _ => throw ArgumentError('Invalid Json'),
     };
@@ -53,7 +53,7 @@ class UserModelADM extends UserModel {
 class UserModelEmployee extends UserModel {
   final int barbershopId;
   final List<String> workDays;
-  final List<int> workhours;
+  final List<int> workHours;
 
   UserModelEmployee({
     required super.id,
@@ -61,7 +61,7 @@ class UserModelEmployee extends UserModel {
     required super.email,
     required this.barbershopId,
     required this.workDays,
-    required this.workhours,
+    required this.workHours,
     super.avatar,
   });
 
@@ -82,7 +82,7 @@ class UserModelEmployee extends UserModel {
           avatar: json['avatar'],
           barbershopId: barbershopId,
           workDays: workDays.cast<String>(),
-          workhours: workHours.cast<int>(),
+          workHours: workHours.cast<int>(),
         ),
       _ => throw ArgumentError('Invalid Json'),
     };
