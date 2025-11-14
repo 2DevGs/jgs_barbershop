@@ -1,7 +1,7 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jgs_barbershop/src/core/providers/application_providers.dart';
 import 'package:jgs_barbershop/src/core/ui/barbershop_icons.dart';
 import 'package:jgs_barbershop/src/core/ui/constants.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/barbershop_loader.dart';
@@ -22,6 +22,7 @@ class HomeAdmPage extends ConsumerWidget {
         backgroundColor: ColorsConstants.brow,
         onPressed: () async {
           await Navigator.of(context).pushNamed('/employee/register');
+          ref.invalidate(getMeProvider);
           ref.invalidate(homeAdmVmProvider);
         },
         child: CircleAvatar(
@@ -37,7 +38,8 @@ class HomeAdmPage extends ConsumerWidget {
               SliverToBoxAdapter(child: HomeHeader()),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, index) => HomeEmployeeTile(employee: data.employees[index]),
+                  (context, index) =>
+                      HomeEmployeeTile(employee: data.employees[index]),
                   childCount: data.employees.length,
                 ),
               ),
@@ -46,7 +48,7 @@ class HomeAdmPage extends ConsumerWidget {
         },
         error: (e, s) {
           log('Erro ao carregar colaboladores', error: e, stackTrace: s);
-          return Center(child: Text('Erro ao carregar página'),);
+          return Center(child: Text('Erro ao carregar página'));
         },
         loading: () {
           return BarbershopLoader();
