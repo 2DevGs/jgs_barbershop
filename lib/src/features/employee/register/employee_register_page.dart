@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jgs_barbershop/src/core/providers/application_providers.dart';
 import 'package:jgs_barbershop/src/core/ui/constants.dart';
+import 'package:jgs_barbershop/src/core/ui/helpers/form_helper.dart';
 import 'package:jgs_barbershop/src/core/ui/helpers/messages.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/avatar_widget.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/barbershop_loader.dart';
@@ -112,6 +113,7 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
                           children: [
                             const SizedBox(height: 24),
                             TextFormField(
+                              onTapOutside: (_) => context.unFocus(),
                               controller: _nameEC,
                               validator: registerADM ? null : 
                               Validatorless.required(
@@ -121,6 +123,7 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
                             ),
                             const SizedBox(height: 24),
                             TextFormField(
+                              onTapOutside: (_) => context.unFocus(),
                               controller: _emailEC,
                               validator: registerADM ? null : 
                               Validatorless.multiple([
@@ -133,6 +136,7 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
                             ),
                             const SizedBox(height: 24),
                             TextFormField(
+                              onTapOutside: (_) => context.unFocus(),
                               obscureText: true,
                               controller: _passwordEC,
                               validator: registerADM ? null : 
