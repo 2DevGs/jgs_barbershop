@@ -21,6 +21,7 @@ class HomeEmployeePage extends ConsumerWidget {
           return Center(child: Text('Erro ao carregar página'));
         },
         loading: () => BarbershopLoader(),
+        skipLoadingOnRefresh: false,
         data: (user) {
           final UserModel(:id, :name) = user;
           return CustomScrollView(
@@ -94,10 +95,11 @@ class HomeEmployeePage extends ConsumerWidget {
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(56),
                         ),
-                        onPressed: () {
-                          Navigator.of(
+                        onPressed: () async {
+                          await Navigator.of(
                             context,
                           ).pushNamed('/schedule', arguments: user);
+                          ref.invalidate(getTotalSchedulesTodayProvider);
                         },
                         child: Text('AGENDAR CLIENTE'),
                       ),
