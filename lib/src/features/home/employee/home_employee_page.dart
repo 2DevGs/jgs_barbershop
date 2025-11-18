@@ -4,6 +4,7 @@ import 'package:jgs_barbershop/src/core/providers/application_providers.dart';
 import 'package:jgs_barbershop/src/core/ui/constants.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/avatar_widget.dart';
 import 'package:jgs_barbershop/src/core/ui/widgets/barbershop_loader.dart';
+import 'package:jgs_barbershop/src/features/home/employee/home_employee_provider.dart';
 import 'package:jgs_barbershop/src/features/home/widgets/home_header.dart';
 import 'package:jgs_barbershop/src/model/user_model.dart';
 
@@ -21,7 +22,7 @@ class HomeEmployeePage extends ConsumerWidget {
         },
         loading: () => BarbershopLoader(),
         data: (user) {
-          final UserModel(:name) = user;
+          final UserModel(:id, :name) = user;
           return CustomScrollView(
             slivers: [
               SliverToBoxAdapter(child: HomeHeader(hideFilter: true)),
@@ -51,13 +52,32 @@ class HomeEmployeePage extends ConsumerWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              '5',
-                              style: TextStyle(
-                                fontSize: 32,
-                                color: ColorsConstants.brow,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            Consumer(
+                              builder: (context, ref, child) {
+                                final totalAsync = ref.watch(
+                                  getTotalSchedulesTodayProvider(id),
+                                );
+                                return totalAsync.when(
+                                  loading: () => BarbershopLoader(),
+                                  error: (error, stackTrace) {
+                                    return const Center(
+                                      child: Text(
+                                        'Erro ao carregar total de agendamentos!',
+                                      ),
+                                    );
+                                  },
+                                  data: (totalSchedule) {
+                                    return Text(
+                                      '$totalSchedule',
+                                      style: TextStyle(
+                                        fontSize: 32,
+                                        color: ColorsConstants.brow,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
                             ),
                             Text(
                               'Hoje',
